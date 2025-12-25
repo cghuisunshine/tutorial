@@ -198,69 +198,124 @@
 
 I will give you a chapter or unit document as input. Your job has TWO PARTS:
 
-PART A – WRITE A TUTORIAL  
+---
+
+# PART A — WRITE A TUTORIAL (Markdown)
+
 From the input document:
 
 1. Extract and organize:
-   - Key concepts
-   - Definitions
-   - Rules/patterns/conditions
-   - All important formulas/equations and any worked example patterns
+
+   * Key concepts
+   * Definitions
+   * Rules / patterns / conditions
+   * All important formulas / equations and any worked-example patterns
 
 2. For EACH major formula or definition:
-   - First, state it clearly and correctly.
-   - Then EXPLAIN ITS MEANING IN SIMPLE LANGUAGE:
-     - What does it actually represent in real terms?
-     - How should a Grade 11–12 student interpret it?
-     - What are the units, and what does each symbol mean?
-   - If relevant, include ONE short worked example or interpretation to show how it is used.
+
+   * First, state it clearly and correctly.
+   * Then **explain its meaning in simple language**:
+
+     * What does it represent in real terms?
+     * How should a Grade 11–12 student interpret it?
+     * Units: what are they?
+     * What does each symbol mean?
+   * If relevant, include **one short worked example or interpretation** showing how it is used.
 
 3. Structure the tutorial as:
-   - Section headings that match or closely follow the document sections (e.g., 7.1, 7.2, etc.).
-   - Under each section:
-     - “Key ideas”
-     - “Important formulas & their meaning”
-     - “Short example(s)” if available from the text.
-   - Do NOT include original page numbers.
 
-4. Keep explanations concept-focused, not just procedural:
-   - Always explain WHY, not just HOW.
-   - Avoid heavy purple prose: be clear, compact, and student-friendly.
+   * Section headings that match or closely follow the document sections (e.g., 7.1, 7.2, etc.).
+   * Under each section, include:
 
-PART B – BUILD AN INTERACTIVE HTML MAP  
-Create a single self-contained HTML file that:
+     * **Key ideas**
+     * **Important formulas & their meaning**
+     * **Short example(s)** (if available)
+   * Do **NOT** include original page numbers.
 
-1. Presents an interactive “concept map” for the chapter:
-   - One card per major section (e.g., 7.1, 7.2, 7.3, 7.4).
-   - Inside each card, use collapsible “nodes” for:
-     - Roots = core ideas & definitions
-     - Trunk = formulas, rules, patterns
-     - Leaves = examples, tips, interpretations
+4. Keep explanations concept-focused:
 
-2. UI/UX requirements:
-   - Clean, modern, dark-theme style.
-   - Collapsible nodes (click header to expand/collapse).
-   - A sidebar with:
-     - Section links (click to scroll to that section).
-     - A search/filter box that filters visible cards by keyword.
-   - Small “copy” buttons 📋 on key formulas or short code-like snippets so they can be copied to clipboard.
-   - Text content double click copied to clipboard
-   - No external CSS/JS files – everything must be inline in one HTML file.
-   - make the html page mobile friendly, i.e. the left side navigation should be moved on top of right side content                                                                                                                                           
+   * Explain **WHY**, not just HOW.
+   * Be clear, compact, student-friendly. Avoid overly decorative writing.
 
+---
 
-3. Content rules(IMPORTANT – FULL TEXT FROM PART A):
-   - The HTML should effectively be a readable mini-textbook version of PART A, not just short bullet points.
-   - The Roots/Trunk/Leaves nodes should embed and reorganize the same detailed content from the written tutorial, including:
-     - Full definitions and key ideas (Roots)
-     - Full explanations of formulas, rules, and patterns (Trunk)
-     - Examples, short worked interpretations, tips, and common pitfalls (Leaves)
-   - It’s okay to slightly condense wording, but the HTML must capture all major explanations and examples from PART A, not just headlines.
-   - Do NOT include page numbers from the original document.
+# PART B — BUILD A SWITCHABLE MULTI-STYLE HTML LEARNING VIEW (Single Self-Contained HTML)
 
-IMPORTANT:
-- FIRST, output the written tutorial in Markdown.
-- THEN, after a clear separator line (like `---`), output the full HTML file in one ```html code block.
+Create **one** self-contained HTML file that presents the same content from Part A in **three switchable styles**:
+
+## 1) Style Modes (must be switchable)
+
+Add a top toolbar with a **Mode Switch** (tabs or segmented buttons) that toggles between:
+
+### Mode A — “Book View” (simple textbook)
+
+* Clean reading layout (like a mini e-textbook).
+* Section headings (7.1, 7.2…) with full readable paragraphs.
+* Optional callout boxes for “Key idea”, “Pitfall”, “Tip”.
+
+### Mode B — “PPT View” (slide-like)
+
+* Each major section becomes a **slide deck**.
+* Within each section, create multiple slides such as:
+
+  * Slide 1: Big idea / overview
+  * Slide 2: Definitions (key terms)
+  * Slide 3: Formulas + symbol meanings
+  * Slide 4: Example(s) / interpretation
+* Provide **Next/Prev** buttons and keyboard support (← →).
+* Use large fonts and high contrast.
+
+### Mode C — “Interactive Map View” (current interactive style)
+
+* One card per major section (7.1, 7.2, 7.3…).
+* Inside each card, collapsible nodes:
+
+  * **Roots** = core ideas & definitions
+  * **Trunk** = formulas, rules, patterns
+  * **Leaves** = examples, tips, interpretations
+
+## 2) Global UI/UX Requirements (apply to all modes)
+
+* Clean, modern, **dark-theme** styling.
+* Must be **mobile-friendly**:
+
+  * On narrow screens, the left navigation/sidebar moves **above** the content (top stacked layout).
+* Include a sidebar/nav panel with:
+
+  * Section links (scroll-to)
+  * A search/filter input that filters sections/cards by keyword (works across all modes)
+* Interactions:
+
+  * Collapsible nodes (click header to expand/collapse) where relevant
+  * Small **copy buttons 📋** beside key formulas/snippets to copy to clipboard
+  * **Double-click** on any text block copies that block to clipboard
+* No external CSS/JS: everything inline in one HTML file.
+
+## 3) Content Rules (IMPORTANT — FULL CONTENT FROM PART A)
+
+* The HTML is a **readable mini-textbook**, not just bullet fragments.
+* All Roots/Trunk/Leaves and Book/PPT content must embed and reorganize the **same detailed explanations and examples** from Part A:
+
+  * Full definitions and key ideas
+  * Full explanation of formulas/rules/patterns (with symbol meanings + units)
+  * Examples, interpretations, tips, pitfalls
+* You may slightly condense wording, but do not reduce it to headlines only.
+* Do **NOT** include original page numbers.
+
+---
+
+# OUTPUT FORMAT (STRICT)
+
+1. FIRST output the written tutorial in **Markdown**.
+2. THEN output a clear separator line:
+   `---`
+3. THEN output the full HTML file in a single code block:
+
+```html
+<!-- full self-contained HTML here -->
+```
+
+---
 
 Now here is the input document you must base everything on:
 
