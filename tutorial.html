@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tutorial Prompt – Double-Click to Copy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --card: #111827;
+      --card-accent: #1f2937;
+      --accent: #4f8dff;
+      --accent-soft: rgba(79, 141, 255, 0.16);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.5);
+      --radius-xl: 18px;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, "Consolas", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background:
+        radial-gradient(circle at top left, #1f2937, #050816 55%),
+        #050816;
+      color: var(--text);
+      font-family: var(--font-main);
+    }
+
+    .container {
+      max-width: 960px;
+      width: 100%;
+    }
+
+    .header {
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 650;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--muted);
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .card {
+      position: relative;
+      background: linear-gradient(145deg, var(--card-accent), var(--card));
+      border-radius: var(--radius-xl);
+      padding: 14px 14px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      transition: box-shadow 0.15s ease, transform 0.12s ease,
+        border-color 0.15s ease, background 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+      transform: translateY(-1px);
+      border-color: var(--accent-soft);
+      background: radial-gradient(circle at top left, #1f2937, #050816);
+    }
+
+    .card::before {
+      content: "Double-click anywhere in the box to copy the entire prompt";
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .label-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #d1d5db;
+      background: rgba(0, 0, 0, 0.25);
+      margin-bottom: 6px;
+    }
+
+    .label-pill span {
+      font-size: 12px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 70vh;
+      overflow: auto;
+      color: #e5e7eb;
+    }
+
+    .hint-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.35);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      margin-left: 2px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #10b981;
+      color: #022c22;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">
+        Tutorial Prompt
+        <span class="badge">Double-click to copy</span>
+      </div>
+      <div class="subtitle">
+        Use this prompt in a new chat to generate a canonical tutorial + pedagogical restructuring + a self-contained study HTML page.
+      </div>
+    </div>
+
+    <div class="card" id="copyCard">
+      <div class="label-pill">
+        <span>📋</span>
+        <span>Prompt</span>
+      </div>
+      <pre id="promptText">You are my study assistant for building structured, high-quality teaching materials.
+
+I will provide a textbook chapter or lecture notes
+(math / physics / chemistry).
+
+Your task has THREE PARTS.
+
+==================================================
+PART A — WRITE THE CANONICAL TUTORIAL (Markdown)
+==================================================
+
+This is the authoritative, content-complete version.
+All later outputs must be derived from this part.
+
+From the input document:
+
+1. Extract and organize:
+   - Core concepts and big ideas
+   - Precise definitions (use textbook-correct wording)
+   - Rules, laws, assumptions, and conditions of validity
+   - All important formulas, equations, identities, and relationships
+   - Standard problem-solving patterns used in the chapter
+
+2. For EACH major formula, law, or definition:
+
+   a. State it clearly and correctly (proper symbols and notation)
+
+   b. Explain its meaning in simple, student-friendly language:
+      - What does it represent physically or mathematically?
+      - Why does this quantity matters
+      - What each symbol represents
+      - Units of each quantity
+      - Assumptions behind the formula
+
+   c. Explain limits and conditions:
+      - When it applies
+      - When it does NOT apply
+      - Common student misconceptions
+
+   d. Include ONE short worked example or interpretation:
+      - Step-by-step reasoning
+      - Emphasize thinking over calculation
+
+3. Organize the tutorial using section headings that follow the chapter
+   (e.g., 5.1, 5.2, 5.3 …).
+
+   Under each section include:
+   - **Key Ideas**
+   - **Important formulas & meanings**
+   - **Worked example(s) or conceptual illustrations**
+
+4. Writing style:
+   - Calm, precise, explanatory
+   - Suitable for Grade 11–12 or first-year university
+   - No skipped reasoning
+   - No content invented beyond the source
+
+==================================================
+PART B — PEDAGOGICAL RESTRUCTURING
+==================================================
+
+Using ONLY the content from Part A:
+
+1. **Concept Map / Knowledge Tree**
+   - Show how concepts connect
+   - Use hierarchy or arrow logic
+   - Emphasize dependencies between ideas
+
+2. **Common Pitfalls & Misconceptions**
+   - At least 3 realistic student errors
+   - Explain why each error occurs conceptually
+
+3. **Problem-Solving Patterns**
+   - Identify common problem types
+   - Provide a general strategy for each
+
+4. **Quick Review / Exam Checklist**
+   - If a student can explain these points,
+     they understand the chapter
+
+==================================================
+PART C — HTML OUTPUT (INTERACTIVE STUDY PAGE)
+==================================================
+
+Convert Parts A and B into a **single, self-contained HTML page**.
+
+REQUIREMENTS:
+
+1. Structure:
+   - Left navigation sidebar with section links
+   - Main content area with sections from Part A
+   - Collapsible blocks for:
+     - Definitions
+     - Formulas
+     - Worked examples
+     - Pitfalls
+
+2. Content mapping:
+   - Part A → main instructional content
+   - Part B → summary panels, concept map, exam checklist
+
+3. Style:
+   - Clean, readable daylight theme by default
+   - Suitable for long study sessions
+   - Responsive for desktop and tablet
+
+4. Interaction:
+   - Collapsible sections (expand / collapse)
+   - Clear visual separation between concepts
+   - No external libraries unless absolutely necessary
+
+5. Output rules:
+   - Output **ONLY the final HTML**
+   - No Markdown
+   - No explanations outside the HTML
+   - HTML must work as a standalone file
+
+==================================================
+IMPORTANT RULES
+==================================================
+
+- Part A is the single source of truth
+- Part B reorganizes, but does not add new content
+- Part C must reflect Parts A and B exactly
+- Explain concepts BEFORE formulas
+- No filler or motivational language</pre>
+
+      <div class="hint-row">
+        <span>💡 Double-click inside the box to copy the entire prompt.</span>
+        <span>Or select and copy manually with <span class="kbd">Ctrl</span> + <span class="kbd">C</span>.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Prompt copied to clipboard</div>
+
+  <script>
+    const card = document.getElementById("copyCard");
+    const pre = document.getElementById("promptText");
+    const toast = document.getElementById("toast");
+
+    function showToast() {
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 1200);
+    }
+
+    function copyPrompt() {
+      const text = pre.innerText;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(showToast)
+          .catch(() => {
+            // Fallback
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+              document.execCommand("copy");
+              showToast();
+            } catch (err) {
+              console.error("Copy failed", err);
+            }
+            document.body.removeChild(textarea);
+          });
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+          document.execCommand("copy");
+          showToast();
+        } catch (err) {
+          console.error("Copy failed", err);
+        }
+        document.body.removeChild(textarea);
+      }
+    }
+
+    card.addEventListener("dblclick", copyPrompt);
+  </script>
+</body>
+</html>
+
