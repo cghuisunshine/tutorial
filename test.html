@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Organic Chemistry (Chapter 8) — Multi-Style Learning View</title>
+<style>
+  :root{
+    --bg:#f6f7f9;
+    --paper:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --shadow: 0 6px 20px rgba(17,24,39,.08);
+    --shadow2: 0 2px 10px rgba(17,24,39,.06);
+    --radius: 14px;
+    --radius2: 10px;
+    --pad: 14px;
+    --gap: 14px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--text);
+  }
+
+  /* Layout: toolbar + (sidebar | content) */
+  .app{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .toolbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:saturate(1.2) blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .toolbar-inner{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    max-width:1200px;
+    margin:0 auto;
+  }
+
+  .brand{
+    display:flex;
+    flex-direction:column;
+    line-height:1.1;
+    margin-right:auto;
+  }
+  .brand .t1{font-weight:800; font-size:15px;}
+  .brand .t2{font-size:12px; color:var(--muted);}
+
+  .btn{
+    border:1px solid var(--border);
+    background:var(--paper);
+    color:var(--text);
+    border-radius:10px;
+    padding:8px 10px;
+    cursor:pointer;
+    box-shadow:var(--shadow2);
+    font-weight:600;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn.small{padding:6px 8px; font-weight:700}
+  .btn.icon{display:flex; align-items:center; gap:8px}
+
+  .seg{
+    display:flex;
+    border:1px solid var(--border);
+    background:var(--paper);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:var(--shadow2);
+  }
+  .seg button{
+    border:0;
+    background:transparent;
+    padding:8px 10px;
+    cursor:pointer;
+    font-weight:800;
+    color:var(--muted);
+  }
+  .seg button.active{
+    color:var(--text);
+    background:#f2f3f6;
+  }
+
+  .main{
+    flex:1;
+    display:grid;
+    grid-template-columns: 300px 1fr;
+    gap:0;
+    max-width:1200px;
+    width:100%;
+    margin:0 auto;
+  }
+
+  /* Sidebar */
+  .sidebar{
+    border-right:1px solid var(--border);
+    background:var(--paper);
+    padding:12px;
+    position:relative;
+  }
+  .sidebar .box{
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow2);
+    padding:12px;
+  }
+  .search{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .search input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 10px;
+    font-size:14px;
+    outline:none;
+    background:#fbfbfc;
+  }
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .nav a{
+    text-decoration:none;
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px 10px;
+    background:#fbfbfc;
+    box-shadow:var(--shadow2);
+    font-weight:800;
+  }
+  .nav a span{
+    display:block;
+    font-weight:700;
+    color:var(--muted);
+    margin-top:2px;
+    font-size:12px;
+  }
+
+  /* Content */
+  .content{
+    padding:12px;
+  }
+  .paper{
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:16px;
+  }
+
+  /* Sidebar hidden behavior (CRITICAL) */
+  body.sidebar-hidden .main{
+    grid-template-columns: 1fr; /* occupy 100% */
+  }
+  body.sidebar-hidden .sidebar{
+    display:none;
+  }
+
+  /* Mobile stacked: sidebar above content */
+  @media (max-width: 860px){
+    .main{ grid-template-columns: 1fr; }
+    .sidebar{
+      border-right:0;
+      border-bottom:1px solid var(--border);
+    }
+    body.sidebar-hidden .sidebar{ display:none; }
+  }
+
+  h1,h2,h3{margin:0 0 10px 0}
+  h1{font-size:22px}
+  h2{font-size:18px; margin-top:18px}
+  h3{font-size:15px; color:#111827; margin-top:14px}
+  p{margin:8px 0; line-height:1.55}
+  ul{margin:8px 0 8px 20px; line-height:1.55}
+  .muted{color:var(--muted)}
+  .hr{height:1px; background:var(--border); margin:14px 0}
+
+  .callouts{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:10px;
+    margin:10px 0;
+  }
+  .callout{
+    border:1px solid var(--border);
+    border-radius:var(--radius2);
+    padding:12px;
+    background:#fbfbfc;
+  }
+  .callout b{display:block; margin-bottom:6px}
+
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--border);
+    padding:6px 10px;
+    border-radius:999px;
+    background:#fbfbfc;
+    font-weight:800;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  /* Collapsible nodes (details) */
+  details{
+    border:1px solid var(--border);
+    border-radius:var(--radius2);
+    background:#fbfbfc;
+    padding:10px;
+  }
+  summary{
+    cursor:pointer;
+    font-weight:900;
+    user-select:none;
+  }
+  details > div{margin-top:10px}
+
+  /* Copy UI */
+  .copy-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:10px;
+    border:1px dashed #d1d5db;
+    border-radius:12px;
+    background:#ffffff;
+    margin:10px 0;
+  }
+  .copy-row code{
+    font-family:var(--mono);
+    font-size:13px;
+    padding:2px 6px;
+    border-radius:8px;
+    background:#f3f4f6;
+    border:1px solid var(--border);
+  }
+  .copy-row .copy-btn{
+    margin-left:auto;
+    white-space:nowrap;
+  }
+
+  /* Double-click copy hint */
+  .copyable{ position:relative; }
+  .copyable:hover{ outline:2px solid rgba(59,130,246,.08); outline-offset:6px; border-radius:10px; }
+  .dblhint{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+  }
+
+  /* Mode sections */
+  .mode{ display:none; }
+  .mode.active{ display:block; }
+
+  /* PPT view */
+  .ppt-shell{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .ppt-top{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+  }
+  .ppt-slide{
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:#ffffff;
+    box-shadow:var(--shadow);
+    padding:22px;
+    min-height:360px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+  }
+  .ppt-slide .title{
+    font-size:22px;
+    font-weight:1000;
+    margin-bottom:8px;
+  }
+  .ppt-slide .subtitle{
+    color:var(--muted);
+    font-weight:800;
+    margin-bottom:14px;
+  }
+  .ppt-slide .body{
+    font-size:18px;
+    line-height:1.55;
+  }
+  .ppt-controls{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .kbd{
+    font-family:var(--mono);
+    font-size:12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:4px 6px;
+    background:#fbfbfc;
+    color:var(--muted);
+    font-weight:700;
+  }
+
+  /* Map view cards */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:12px;
+  }
+  @media (max-width: 860px){
+    .grid{ grid-template-columns: 1fr; }
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow2);
+    padding:14px;
+  }
+  .card .card-title{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .card .card-title h2{
+    margin:0;
+    font-size:16px;
+  }
+
+  /* Toast */
+  .toast{
+    position:fixed;
+    right:12px;
+    bottom:12px;
+    background:#111827;
+    color:#fff;
+    padding:10px 12px;
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    opacity:0;
+    transform:translateY(8px);
+    transition: .2s ease;
+    pointer-events:none;
+    font-weight:800;
+    font-size:13px;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+</style>
+</head>
+
+<body>
+<div class="app">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-inner">
+      <div class="brand">
+        <div class="t1">Organic Chemistry (Ch. 8)</div>
+        <div class="t2">Book View • PPT View • Interactive Map View (daylight theme)</div>
+      </div>
+
+      <button id="toggleSidebar" class="btn icon" title="Show/Hide sidebar">
+        ☰ Sidebar
+      </button>
+
+      <div class="seg" role="tablist" aria-label="Mode switch">
+        <button class="mode-btn active" data-mode="book" role="tab" aria-selected="true">Book</button>
+        <button class="mode-btn" data-mode="ppt" role="tab" aria-selected="false">PPT</button>
+        <button class="mode-btn" data-mode="map" role="tab" aria-selected="false">Map</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Navigation">
+      <div class="box">
+        <div class="search">
+          <input id="filterInput" type="text" placeholder="Search sections (e.g., alkene, ester, isomer)..." />
+          <button id="clearFilter" class="btn small" title="Clear search">✕</button>
+        </div>
+        <div id="navList" class="nav"></div>
+        <div class="dblhint">Tip: Double-click any paragraph/list to copy it.</div>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <div class="paper">
+        <div id="bookMode" class="mode active"></div>
+        <div id="pptMode" class="mode"></div>
+        <div id="mapMode" class="mode"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast" class="toast">Copied!</div>
+
+<script>
+/* =========================
+   DATA (same content in 3 modes)
+   ========================= */
+const SECTIONS = [
+  {
+    id:"8.1",
+    title:"Simple Hydrocarbons and Isomerism",
+    short:"Hydrocarbon families, formulas, naming, structural isomers",
+    book: `
+      <h2 id="sec-8.1">8.1 Simple Hydrocarbons and Isomerism</h2>
+
+      <h3>Key ideas</h3>
+      <div class="copyable">
+        <p>Organic compounds are carbon-based compounds. Many are built from carbon chains (straight or branched) with atoms or groups attached.</p>
+        <p><b>Hydrocarbons</b> are the simplest organic compounds: they contain only carbon (C) and hydrogen (H). Carbon forms <b>4 bonds</b>, so the bonding pattern of carbon explains why different hydrocarbon families have different general formulas and reactivity.</p>
+      </div>
+
+      <div class="callouts">
+        <div class="callout copyable">
+          <b>Definition: Hydrocarbon</b>
+          <p>A compound containing only carbon and hydrogen.</p>
+        </div>
+        <div class="callout copyable">
+          <b>Definition: Structural isomers</b>
+          <p>Compounds with the same molecular formula but different structural formulas (different connectivity). Same “ingredients,” different “building plan.”</p>
+        </div>
+      </div>
+
+      <h3>Hydrocarbon families + what the formulas mean</h3>
+
+      <div class="copy-row">
+        <div class="copyable">
+          <p><b>Alkanes (single bonds only, saturated)</b></p>
+          <p><code>C<sub>n</sub>H<sub>2n+2</sub></code> where <b>n</b> = number of carbons.</p>
+          <p>Meaning: single-bond chains let hydrogen fill all remaining bonds. No room for “extra” atoms without replacing H.</p>
+          <p><i>Example:</i> n=3 → C<sub>3</sub>H<sub>8</sub> (propane).</p>
+        </div>
+        <button class="btn copy-btn" data-copy="Alkanes: CnH(2n+2). Example: n=3 → C3H8 (propane).">📋 Copy</button>
+      </div>
+
+      <div class="copy-row">
+        <div class="copyable">
+          <p><b>Cycloalkanes (single bonds in a ring)</b></p>
+          <p><code>C<sub>n</sub>H<sub>2n</sub></code></p>
+          <p>Meaning: closing a ring removes two H compared with the open-chain alkane because the “ends” connect to each other.</p>
+          <p><i>Example:</i> n=5 → C<sub>5</sub>H<sub>10</sub> (cyclopentane).</p>
+        </div>
+        <button class="btn copy-btn" data-copy="Cycloalkanes: CnH(2n). Example: n=5 → C5H10 (cyclopentane).">📋 Copy</button>
+      </div>
+
+      <div class="copy-row">
+        <div class="copyable">
+          <p><b>Alkenes (at least one double bond)</b></p>
+          <p><code>C<sub>n</sub>H<sub>2n</sub></code> (typical for one double bond, open chain)</p>
+          <p>Meaning: a double bond means fewer H can fit because two carbons share more electrons with each other.</p>
+          <p><i>Example:</i> n=4 → C<sub>4</sub>H<sub>8</sub> (butene).</p>
+        </div>
+        <button class="btn copy-btn" data-copy="Alkenes (typical): CnH(2n). Example: n=4 → C4H8 (butene).">📋 Copy</button>
+      </div>
+
+      <div class="copy-row">
+        <div class="copyable">
+          <p><b>Alkynes (at least one triple bond)</b></p>
+          <p><code>C<sub>n</sub>H<sub>2n-2</sub></code> (typical for one triple bond, open chain)</p>
+          <p>Meaning: triple bonds reduce H even more than double bonds.</p>
+          <p><i>Example:</i> n=4 → C<sub>4</sub>H<sub>6</sub> (butyne).</p>
+        </div>
+        <button class="btn copy-btn" data-copy="Alkynes (typical): CnH(2n-2). Example: n=4 → C4H6 (butyne).">📋 Copy</button>
+      </div>
+
+      <div class="callout copyable">
+        <b>Aromatics (benzene-like)</b>
+        <p>Aromatic hydrocarbons are unusually stable ring systems (often benzene-based). They behave differently from typical alkenes because of that stability.</p>
+      </div>
+
+      <h3>Naming hydrocarbons (IUPAC-style) — why the steps matter</h3>
+      <div class="copyable">
+        <ol>
+          <li><b>Find the parent chain</b>: choose the longest continuous carbon chain. <i>Why:</i> the main backbone should dominate the name.</li>
+          <li><b>Number the chain</b>: number from the end that gives substituents the lowest possible numbers. <i>Why:</i> prevents multiple “equally valid” names.</li>
+          <li><b>Name substituents</b>: methyl (–CH<sub>3</sub>), ethyl (–C<sub>2</sub>H<sub>5</sub>), propyl (–C<sub>3</sub>H<sub>7</sub>), etc. Use di-, tri-, tetra- for multiples.</li>
+          <li><b>Assemble the name</b>: numbers + substituents + parent. Use commas between numbers and hyphens between numbers/words.</li>
+        </ol>
+      </div>
+
+      <div class="callout copyable">
+        <b>Short example: structural isomers of C<sub>4</sub>H<sub>10</sub></b>
+        <p>C<sub>4</sub>H<sub>10</sub> can be straight-chain <b>butane</b> or branched <b>2-methylpropane</b>. Same formula, different shape → different properties (like boiling point).</p>
+      </div>
+    `,
+    ppt: [
+      {
+        title:"8.1 — Big idea",
+        subtitle:"Hydrocarbons + why formulas differ",
+        body: `
+          <div class="copyable">
+            <p><b>Hydrocarbons</b> contain only C and H. Carbon forms <b>4 bonds</b>, so bonding rules control how many H atoms fit.</p>
+            <p><b>Saturated</b> (single bonds) vs <b>unsaturated</b> (double/triple bonds) predicts reactivity.</p>
+          </div>
+        `
+      },
+      {
+        title:"8.1 — Families (formulas)",
+        subtitle:"Patterns you should memorize + interpret",
+        body: `
+          <div class="copyable">
+            <p><b>Alkanes:</b> C<sub>n</sub>H<sub>2n+2</sub> (single bonds)</p>
+            <p><b>Cycloalkanes:</b> C<sub>n</sub>H<sub>2n</sub> (ring removes 2 H)</p>
+            <p><b>Alkenes:</b> C<sub>n</sub>H<sub>2n</sub> (double bond reduces H)</p>
+            <p><b>Alkynes:</b> C<sub>n</sub>H<sub>2n-2</sub> (triple bond reduces H more)</p>
+          </div>
+        `
+      },
+      {
+        title:"8.1 — Naming (IUPAC logic)",
+        subtitle:"One structure → one name",
+        body: `
+          <div class="copyable">
+            <p>1) Longest chain = parent backbone.</p>
+            <p>2) Number for <b>lowest substituent numbers</b>.</p>
+            <p>3) Name branches (methyl, ethyl…) + use di/tri…</p>
+            <p>4) Assemble numbers–substituents–parent with commas/hyphens.</p>
+          </div>
+        `
+      },
+      {
+        title:"8.1 — Example (isomers)",
+        subtitle:"Same formula, different structure",
+        body: `
+          <div class="copyable">
+            <p>C<sub>4</sub>H<sub>10</sub> can be:</p>
+            <ul>
+              <li><b>butane</b> (straight chain)</li>
+              <li><b>2-methylpropane</b> (branched)</li>
+            </ul>
+            <p>Different shape → different physical properties.</p>
+          </div>
+        `
+      }
+    ],
+    map: {
+      roots: `
+        <div class="copyable">
+          <ul>
+            <li><b>Hydrocarbon</b>: only C and H.</li>
+            <li><b>Saturated</b>: single bonds only. <b>Unsaturated</b>: double/triple bonds.</li>
+            <li><b>Structural isomers</b>: same formula, different connectivity.</li>
+          </ul>
+        </div>
+      `,
+      trunk: `
+        <div class="copyable">
+          <ul>
+            <li>Alkanes: C<sub>n</sub>H<sub>2n+2</sub></li>
+            <li>Cycloalkanes: C<sub>n</sub>H<sub>2n</sub></li>
+            <li>Alkenes: C<sub>n</sub>H<sub>2n</sub></li>
+            <li>Alkynes: C<sub>n</sub>H<sub>2n-2</sub></li>
+            <li>Naming steps: longest chain → lowest numbers → substituents → assemble name</li>
+          </ul>
+        </div>
+      `,
+      leaves: `
+        <div class="copyable">
+          <p><b>Isomer example:</b> C<sub>4</sub>H<sub>10</sub> = butane vs 2-methylpropane.</p>
+          <p><b>Tip:</b> Always number from the end that gives substituents the smallest set of numbers.</p>
+        </div>
+      `
+    }
+  },
+
+  {
+    id:"8.2",
+    title:"Functional Groups",
+    short:"Reactive parts that control properties + naming cues",
+    book: `
+      <h2 id="sec-8.2">8.2 Functional Groups</h2>
+
+      <h3>Key ideas</h3>
+      <div class="copyable">
+        <p>A <b>functional group</b> is a specific atom or group of atoms that largely determines how an organic molecule behaves (reactivity, polarity, smell, solubility, and uses).</p>
+        <p>Many organic compounds are hydrocarbons with one or more hydrogens replaced by functional groups (O-, N-, or halogen-containing groups).</p>
+      </div>
+
+      <div class="callout copyable">
+        <b>Definition: Functional group</b>
+        <p>A specific atom or group of atoms in an organic molecule that gives it characteristic chemical properties.</p>
+      </div>
+
+      <h3>Major functional groups (meaning + common naming cues)</h3>
+
+      <div class="copyable">
+        <ul>
+          <li><b>Alcohol (–OH):</b> often ends in <b>-ol</b>. More polar than hydrocarbons; small alcohols dissolve better in water.</li>
+          <li><b>Alkyl halide (–F/Cl/Br/I on carbon):</b> prefixes <b>fluoro-, chloro-, bromo-, iodo-</b>.</li>
+          <li><b>Aldehyde (–CHO at chain end):</b> carbonyl at the end; often ends in <b>-al</b>.</li>
+          <li><b>Ketone (C=O within chain):</b> carbonyl in the middle; often ends in <b>-one</b>.</li>
+          <li><b>Carboxylic acid (–COOH):</b> acidic H; ends in <b>-oic acid</b>.</li>
+          <li><b>Ester (–COO–):</b> often fruity smells; often contains <b>-oate</b>.</li>
+          <li><b>Ether (R–O–R):</b> oxygen linking two carbon groups; common solvents.</li>
+          <li><b>Amine (–NH<sub>2</sub>, –NHR, –NR<sub>2</sub>):</b> often basic (can accept H<sup>+</sup>); often ends in <b>-amine</b>.</li>
+        </ul>
+      </div>
+
+      <div class="callout copyable">
+        <b>Pitfall</b>
+        <p>Seeing “–OH” does not always mean “hydroxide ion (OH<sup>−</sup>).” In an alcohol, –OH is covalently bonded and behaves differently from OH<sup>−</sup> in bases.</p>
+      </div>
+    `,
+    ppt: [
+      {
+        title:"8.2 — Big idea",
+        subtitle:"Functional groups control properties",
+        body: `
+          <div class="copyable">
+            <p>A <b>functional group</b> is the “reactive part” of a molecule.</p>
+            <p>It strongly influences: <b>reactivity</b>, <b>polarity</b>, <b>solubility</b>, and common real-world uses.</p>
+          </div>
+        `
+      },
+      {
+        title:"8.2 — Key groups",
+        subtitle:"Recognize the patterns",
+        body: `
+          <div class="copyable">
+            <p><b>Alcohol:</b> –OH (often -ol)</p>
+            <p><b>Aldehyde:</b> –CHO (end, often -al)</p>
+            <p><b>Ketone:</b> C=O (middle, often -one)</p>
+            <p><b>Carboxylic acid:</b> –COOH (often -oic acid)</p>
+            <p><b>Ester:</b> –COO– (often -oate)</p>
+          </div>
+        `
+      },
+      {
+        title:"8.2 — More groups",
+        subtitle:"Common in everyday compounds",
+        body: `
+          <div class="copyable">
+            <p><b>Alkyl halide:</b> halogen on carbon (fluoro-, chloro-, bromo-, iodo-)</p>
+            <p><b>Ether:</b> R–O–R</p>
+            <p><b>Amine:</b> –NH<sub>2</sub> / –NHR / –NR<sub>2</sub> (often basic; -amine)</p>
+          </div>
+        `
+      },
+      {
+        title:"8.2 — Pitfall",
+        subtitle:"Don’t misread –OH",
+        body: `
+          <div class="copyable">
+            <p>In an <b>alcohol</b>, –OH is covalently bonded and is not the same thing as free hydroxide ion OH<sup>−</sup>.</p>
+            <p>So “has –OH” does not automatically mean “strong base.”</p>
+          </div>
+        `
+      }
+    ],
+    map: {
+      roots: `
+        <div class="copyable">
+          <p><b>Functional group</b> = the part of the molecule that largely controls its properties and reactions.</p>
+        </div>
+      `,
+      trunk: `
+        <div class="copyable">
+          <ul>
+            <li>Alcohol: –OH</li>
+            <li>Aldehyde: –CHO (end)</li>
+            <li>Ketone: C=O (middle)</li>
+            <li>Carboxylic acid: –COOH</li>
+            <li>Ester: –COO–</li>
+            <li>Ether: R–O–R</li>
+            <li>Amine: –NH<sub>2</sub> / –NHR / –NR<sub>2</sub></li>
+          </ul>
+        </div>
+      `,
+      leaves: `
+        <div class="copyable">
+          <p><b>Pitfall:</b> –OH in alcohols is not OH<sup>−</sup>.</p>
+          <p><b>Tip:</b> Identify the functional group first; then you can predict typical reactions and naming.</p>
+        </div>
+      `
+    }
+  },
+
+  {
+    id:"8.3",
+    title:"Reactions of Organic Molecules",
+    short:"Combustion, substitution, addition, elimination, esterification, polymers",
+    book: `
+      <h2 id="sec-8.3">8.3 Reactions of Organic Molecules</h2>
+
+      <h3>Key ideas</h3>
+      <div class="copyable">
+        <p>Organic reactions are often grouped by what changes: swapping atoms (<b>substitution</b>), adding atoms to multiple bonds (<b>addition</b>), removing small molecules to form multiple bonds (<b>elimination</b>), or joining many units into long chains (<b>polymerization</b>).</p>
+        <p>Saturated vs unsaturated matters: alkanes (single bonds) tend to do substitution under special conditions, while alkenes/alkynes (double/triple bonds) often do addition because the multiple bond can “open up.”</p>
+      </div>
+
+      <h3>Major reaction types (meaning + patterns)</h3>
+
+      <div class="callout copyable">
+        <b>Combustion</b>
+        <p>Hydrocarbon + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O + energy (heat/light). If oxygen is limited, incomplete combustion can produce CO and soot.</p>
+      </div>
+
+      <div class="callout copyable">
+        <b>Substitution reaction</b>
+        <p>An atom or group in a molecule is replaced by another. Common example: halogen replaces a hydrogen on an alkane (often needs UV/light).</p>
+      </div>
+
+      <div class="callout copyable">
+        <b>Addition reaction</b>
+        <p>Occurs when atoms add across a C=C or C≡C bond, making the molecule more saturated. Example: alkene + Br<sub>2</sub> gives a dihalide (one Br on each carbon).</p>
+      </div>
+
+      <div class="callout copyable">
+        <b>Elimination / dehydration</b>
+        <p>A small molecule (often H<sub>2</sub>O) is removed to form a double bond. Example: alcohol → alkene + water under suitable conditions.</p>
+      </div>
+
+      <div class="callout copyable">
+        <b>Esterification (condensation)</b>
+        <p>Carboxylic acid + alcohol → ester + water. This is a “build a bigger molecule while releasing water” pattern.</p>
+      </div>
+
+      <div class="callout copyable">
+        <b>Polymerization</b>
+        <p>Many monomers join to form a polymer. Alkenes polymerize readily because their double bonds can open and link repeatedly.</p>
+      </div>
+
+      <div class="callout copyable">
+        <b>Short example interpretation</b>
+        <p><b>Ethene + Br<sub>2</sub></b> → <b>1,2-dibromoethane</b>: the C=C becomes C–C, and each carbon gains a Br.</p>
+      </div>
+    `,
+    ppt: [
+      {
+        title:"8.3 — Big idea",
+        subtitle:"Classify reactions by what changes",
+        body: `
+          <div class="copyable">
+            <p><b>Substitution</b> = swap atoms/groups.</p>
+            <p><b>Addition</b> = add across C=C or C≡C.</p>
+            <p><b>Elimination</b> = remove small molecules to form multiple bonds.</p>
+            <p><b>Polymerization</b> = link many monomers into long chains.</p>
+          </div>
+        `
+      },
+      {
+        title:"8.3 — Combustion",
+        subtitle:"Fuel chemistry pattern",
+        body: `
+          <div class="copyable">
+            <p>Hydrocarbon + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O + energy</p>
+            <p><b>Tip:</b> Limited oxygen can produce CO (toxic) and soot.</p>
+          </div>
+        `
+      },
+      {
+        title:"8.3 — Substitution vs Addition",
+        subtitle:"Saturated vs unsaturated",
+        body: `
+          <div class="copyable">
+            <p><b>Alkanes (single bonds)</b> often do substitution (e.g., halogen replacing H under light).</p>
+            <p><b>Alkenes/alkynes</b> often do addition because the multiple bond can open and form new single bonds.</p>
+          </div>
+        `
+      },
+      {
+        title:"8.3 — Condensation & Polymers",
+        subtitle:"Building bigger molecules",
+        body: `
+          <div class="copyable">
+            <p><b>Esterification:</b> acid + alcohol → ester + water.</p>
+            <p><b>Polymerization:</b> many monomers → polymer (common for alkenes).</p>
+            <p><b>Example:</b> ethene + Br<sub>2</sub> adds across the double bond to give 1,2-dibromoethane.</p>
+          </div>
+        `
+      }
+    ],
+    map: {
+      roots: `
+        <div class="copyable">
+          <p>Organic reactions are often easiest to learn by <b>reaction type</b> (what changes in the molecule).</p>
+        </div>
+      `,
+      trunk: `
+        <div class="copyable">
+          <ul>
+            <li><b>Combustion:</b> hydrocarbon + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O + energy</li>
+            <li><b>Substitution:</b> replace an atom/group</li>
+            <li><b>Addition:</b> add across C=C or C≡C</li>
+            <li><b>Elimination:</b> remove small molecule (often H<sub>2</sub>O) to form a double bond</li>
+            <li><b>Esterification:</b> acid + alcohol → ester + water</li>
+            <li><b>Polymerization:</b> monomers → polymer</li>
+          </ul>
+        </div>
+      `,
+      leaves: `
+        <div class="copyable">
+          <p><b>Addition example:</b> ethene + Br<sub>2</sub> → 1,2-dibromoethane (double bond becomes single bond).</p>
+          <p><b>Tip:</b> If you see C=C, think “addition possible.” If it’s all single bonds, think “substitution more likely.”</p>
+        </div>
+      `
+    }
+  }
+];
+
+/* =========================
+   RENDERING
+   ========================= */
+const navList = document.getElementById("navList");
+const bookMode = document.getElementById("bookMode");
+const pptMode  = document.getElementById("pptMode");
+const mapMode  = document.getElementById("mapMode");
+
+function renderNav(filter=""){
+  navList.innerHTML = "";
+  const f = filter.trim().toLowerCase();
+  const items = SECTIONS.filter(s=>{
+    if(!f) return true;
+    const hay = (s.id+" "+s.title+" "+s.short+" "+stripHtml(s.book)).toLowerCase();
+    return hay.includes(f);
+  });
+  if(items.length===0){
+    navList.innerHTML = `<div class="muted" style="padding:8px 6px;">No matches. Try a broader keyword.</div>`;
+    return;
+  }
+  items.forEach(s=>{
+    const a = document.createElement("a");
+    a.href = "#";
+    a.dataset.section = s.id;
+    a.innerHTML = `${s.id} — ${escapeHtml(s.title)}<span>${escapeHtml(s.short)}</span>`;
+    a.addEventListener("click",(e)=>{
+      e.preventDefault();
+      jumpToSection(s.id);
+    });
+    navList.appendChild(a);
+  });
+}
+
+function renderBook(filter=""){
+  const f = filter.trim().toLowerCase();
+  const html = SECTIONS
+    .filter(s=>{
+      if(!f) return true;
+      const hay = (s.id+" "+s.title+" "+s.short+" "+stripHtml(s.book)).toLowerCase();
+      return hay.includes(f);
+    })
+    .map(s=>s.book)
+    .join(`<div class="hr"></div>`);
+  bookMode.innerHTML = `
+    <h1>Book View</h1>
+    <div class="chip">Double-click text to copy</div>
+    <div class="hr"></div>
+    ${html || `<p class="muted">No sections match your search.</p>`}
+  `;
+}
+
+let pptState = {
+  sectionIndex: 0,
+  slideIndex: 0,
+  filter: ""
+};
+
+function getFilteredSections(){
+  const f = pptState.filter.trim().toLowerCase();
+  return SECTIONS.filter(s=>{
+    if(!f) return true;
+    const hay = (s.id+" "+s.title+" "+s.short+" "+stripHtml(s.book)).toLowerCase();
+    return hay.includes(f);
+  });
+}
+
+function renderPPT(){
+  const list = getFilteredSections();
+  if(list.length===0){
+    pptMode.innerHTML = `
+      <h1>PPT View</h1>
+      <p class="muted">No sections match your search.</p>
+    `;
+    return;
+  }
+
+  // clamp state
+  pptState.sectionIndex = Math.max(0, Math.min(pptState.sectionIndex, list.length-1));
+  const sec = list[pptState.sectionIndex];
+  pptState.slideIndex = Math.max(0, Math.min(pptState.slideIndex, sec.ppt.length-1));
+  const slide = sec.ppt[pptState.slideIndex];
+
+  pptMode.innerHTML = `
+    <div class="ppt-shell">
+      <div class="ppt-top">
+        <h1 style="margin:0;">PPT View</h1>
+        <span class="chip">Keyboard: <span class="kbd">←</span> <span class="kbd">→</span></span>
+        <span class="chip">Section: <b>${sec.id}</b> (${pptState.sectionIndex+1}/${list.length})</span>
+        <span class="chip">Slide: <b>${pptState.slideIndex+1}</b>/${sec.ppt.length}</span>
+      </div>
+
+      <div class="ppt-controls">
+        <button class="btn" id="pptPrev">← Prev</button>
+        <button class="btn" id="pptNext">Next →</button>
+        <button class="btn" id="pptPrevSec">⇧ Section</button>
+        <button class="btn" id="pptNextSec">Section ⇩</button>
+      </div>
+
+      <div class="ppt-slide" id="pptSlide">
+        <div class="title">${escapeHtml(slide.title)}</div>
+        <div class="subtitle">${escapeHtml(slide.subtitle)}</div>
+        <div class="body">${slide.body}</div>
+      </div>
+      <div class="muted">Tip: Double-click any text on the slide to copy it.</div>
+    </div>
+  `;
+
+  document.getElementById("pptPrev").onclick = ()=>stepSlide(-1);
+  document.getElementById("pptNext").onclick = ()=>stepSlide(+1);
+  document.getElementById("pptPrevSec").onclick = ()=>stepSection(-1);
+  document.getElementById("pptNextSec").onclick = ()=>stepSection(+1);
+}
+
+function stepSlide(dir){
+  const list = getFilteredSections();
+  if(list.length===0) return;
+  const sec = list[pptState.sectionIndex];
+  const next = pptState.slideIndex + dir;
+  if(next<0){
+    // wrap to previous section last slide
+    if(pptState.sectionIndex>0){
+      pptState.sectionIndex--;
+      const sec2 = list[pptState.sectionIndex];
+      pptState.slideIndex = sec2.ppt.length-1;
+    }
+  }else if(next>=sec.ppt.length){
+    // wrap to next section first slide
+    if(pptState.sectionIndex<list.length-1){
+      pptState.sectionIndex++;
+      pptState.slideIndex = 0;
+    }
+  }else{
+    pptState.slideIndex = next;
+  }
+  renderPPT();
+}
+
+function stepSection(dir){
+  const list = getFilteredSections();
+  if(list.length===0) return;
+  const next = pptState.sectionIndex + dir;
+  if(next<0 || next>=list.length) return;
+  pptState.sectionIndex = next;
+  pptState.slideIndex = 0;
+  renderPPT();
+}
+
+function renderMap(filter=""){
+  const f = filter.trim().toLowerCase();
+  const list = SECTIONS.filter(s=>{
+    if(!f) return true;
+    const hay = (s.id+" "+s.title+" "+s.short+" "+stripHtml(s.book)).toLowerCase();
+    return hay.includes(f);
+  });
+
+  mapMode.innerHTML = `
+    <h1>Interactive Map View</h1>
+    <div class="chip">Roots = core ideas & definitions</div>
+    <div class="chip">Trunk = formulas, rules, patterns</div>
+    <div class="chip">Leaves = examples, tips, interpretations</div>
+    <div class="hr"></div>
+    <div class="grid" id="mapGrid"></div>
+  `;
+
+  const grid = document.getElementById("mapGrid");
+  if(list.length===0){
+    grid.innerHTML = `<p class="muted">No sections match your search.</p>`;
+    return;
+  }
+
+  list.forEach(s=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-title">
+        <span class="chip">${s.id}</span>
+        <h2>${escapeHtml(s.title)}</h2>
+      </div>
+
+      <details open>
+        <summary>Roots (core ideas & definitions)</summary>
+        <div>${s.map.roots}</div>
+      </details>
+
+      <div style="height:10px;"></div>
+
+      <details>
+        <summary>Trunk (formulas, rules, patterns)</summary>
+        <div>${s.map.trunk}</div>
+      </details>
+
+      <div style="height:10px;"></div>
+
+      <details>
+        <summary>Leaves (examples, tips, interpretations)</summary>
+        <div>${s.map.leaves}</div>
+      </details>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* =========================
+   NAV + JUMP LOGIC (works across modes)
+   ========================= */
+function jumpToSection(id){
+  const mode = getMode();
+  if(mode==="book"){
+    const el = document.getElementById("sec-"+id);
+    if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+  }else if(mode==="map"){
+    // Scroll to the card that contains the chip with id
+    const chips = Array.from(mapMode.querySelectorAll(".chip"));
+    const chip = chips.find(c=>c.textContent.trim()===id);
+    if(chip){
+      const card = chip.closest(".card");
+      if(card) card.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  }else if(mode==="ppt"){
+    // Set PPT to that section (if exists in filtered list)
+    const list = getFilteredSections();
+    const idx = list.findIndex(s=>s.id===id);
+    if(idx>=0){
+      pptState.sectionIndex = idx;
+      pptState.slideIndex = 0;
+      renderPPT();
+      pptMode.scrollIntoView({behavior:"smooth", block:"start"});
+    }else{
+      toast("Section not in current search filter.");
+    }
+  }
+}
+
+/* =========================
+   MODE SWITCH
+   ========================= */
+function setMode(mode){
+  document.querySelectorAll(".mode-btn").forEach(b=>{
+    const active = b.dataset.mode===mode;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-selected", active ? "true" : "false");
+  });
+
+  bookMode.classList.toggle("active", mode==="book");
+  pptMode.classList.toggle("active",  mode==="ppt");
+  mapMode.classList.toggle("active",  mode==="map");
+
+  // (Re)render on mode switch so filter applies
+  const filter = document.getElementById("filterInput").value || "";
+  if(mode==="book") renderBook(filter);
+  if(mode==="ppt")  renderPPT();
+  if(mode==="map")  renderMap(filter);
+}
+
+function getMode(){
+  const activeBtn = document.querySelector(".mode-btn.active");
+  return activeBtn ? activeBtn.dataset.mode : "book";
+}
+
+/* =========================
+   SIDEBAR show/hide (CRITICAL full-width)
+   ========================= */
+document.getElementById("toggleSidebar").addEventListener("click", ()=>{
+  document.body.classList.toggle("sidebar-hidden");
+});
+
+/* =========================
+   SEARCH FILTER (applies to all modes)
+   ========================= */
+const filterInput = document.getElementById("filterInput");
+filterInput.addEventListener("input", ()=>{
+  const v = filterInput.value || "";
+  renderNav(v);
+
+  const mode = getMode();
+  if(mode==="book") renderBook(v);
+  if(mode==="map")  renderMap(v);
+  if(mode==="ppt"){
+    pptState.filter = v;
+    // reset to start when filter changes
+    pptState.sectionIndex = 0;
+    pptState.slideIndex = 0;
+    renderPPT();
+  }
+});
+
+document.getElementById("clearFilter").addEventListener("click", ()=>{
+  filterInput.value = "";
+  filterInput.dispatchEvent(new Event("input"));
+});
+
+/* =========================
+   COPY INTERACTIONS
+   - Copy buttons
+   - Double-click any text block copies that block
+   ========================= */
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".copy-btn");
+  if(!btn) return;
+  const text = btn.getAttribute("data-copy") || "";
+  copyToClipboard(text);
+});
+
+document.addEventListener("dblclick", (e)=>{
+  // Copy nearest .copyable block text (or the selected text)
+  const sel = window.getSelection && window.getSelection().toString();
+  if(sel && sel.trim().length>0){
+    copyToClipboard(sel.trim());
+    return;
+  }
+  const block = e.target.closest(".copyable");
+  if(block){
+    copyToClipboard(block.innerText.trim());
+  }
+});
+
+/* Keyboard navigation for PPT */
+document.addEventListener("keydown", (e)=>{
+  if(getMode()!=="ppt") return;
+  if(e.key==="ArrowRight"){ stepSlide(+1); }
+  if(e.key==="ArrowLeft"){ stepSlide(-1); }
+});
+
+/* =========================
+   UTIL
+   ========================= */
+function copyToClipboard(text){
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(()=>{
+    toast("Copied!");
+  }).catch(()=>{
+    // fallback
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    toast("Copied!");
+  });
+}
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 1200);
+}
+
+function stripHtml(html){
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+}
+
+function escapeHtml(s){
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* =========================
+   INIT
+   ========================= */
+function init(){
+  renderNav("");
+  renderBook("");
+  pptState.filter = "";
+  renderPPT();
+  renderMap("");
+}
+init();
+
+/* When switching modes, keep filter consistent */
+document.querySelectorAll(".mode-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const mode = btn.dataset.mode;
+    // keep pptState.filter synced
+    pptState.filter = document.getElementById("filterInput").value || "";
+    setMode(mode);
+  });
+});
+</script>
+</body>
+</html>
+

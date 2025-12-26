@@ -241,9 +241,9 @@ From the input document:
 
 # PART B — BUILD A SWITCHABLE MULTI-STYLE HTML LEARNING VIEW (Single Self-Contained HTML)
 
-Create **one** self-contained HTML file that presents the same content from Part A in **three switchable styles**:
+Create **one** self-contained HTML file that presents the same content from Part A in **three switchable styles**, and supports **two switchable themes** (**Daylight default** + **Nightlight**).
 
-## 1) Style Modes (must be switchable)
+## A) Style Modes (must be switchable)
 
 Add a top toolbar with a **Mode Switch** (tabs or segmented buttons) that toggles between:
 
@@ -263,9 +263,9 @@ Add a top toolbar with a **Mode Switch** (tabs or segmented buttons) that toggle
   * Slide 3: Formulas + symbol meanings
   * Slide 4: Example(s) / interpretation
 * Provide **Next/Prev** buttons and keyboard support (← →).
-* Use large fonts and high contrast.
+* Use large fonts and clear contrast (**works well in both themes**, with Daylight as default).
 
-### Mode C — “Interactive Map View” (current interactive style)
+### Mode C — “Interactive Map View” (interactive style)
 
 * One card per major section (7.1, 7.2, 7.3…).
 * Inside each card, collapsible nodes:
@@ -274,32 +274,86 @@ Add a top toolbar with a **Mode Switch** (tabs or segmented buttons) that toggle
   * **Trunk** = formulas, rules, patterns
   * **Leaves** = examples, tips, interpretations
 
-## 2) Global UI/UX Requirements (apply to all modes)
+---
 
-* Clean, modern, **dark-theme** styling.
-* Must be **mobile-friendly**:
+## B) Global UI/UX Requirements (apply to all modes)
 
-  * On narrow screens, the left navigation/sidebar moves **above** the content (top stacked layout).
-* Include a sidebar/nav panel(could be show/hide with a button) with:
+### 1) Themes: Daylight (default) + Nightlight (switchable)
+
+Add a **Theme Toggle** in the top toolbar (button or segmented control) to switch between:
+
+#### Theme 1 — Daylight (DEFAULT)
+
+* Bright, normal daylight UI:
+
+  * Background: white / very light gray
+  * Text: near-black / dark gray
+  * Borders: light gray
+  * Cards: white with subtle shadow
+* High readability (good for printing and daytime viewing).
+
+#### Theme 2 — Nightlight (OPTIONAL MODE)
+
+* A **warm, eye-comfort night reading** theme (NOT pure black):
+
+  * Background: deep warm gray / very dark brown-gray (not #000)
+  * Text: soft off-white / warm light gray (not pure white)
+  * Borders: muted dark gray
+  * Cards: slightly lighter than background, subtle shadow
+* Keep contrast readable, reduce glare, avoid neon colors.
+
+#### Implementation requirements
+
+* Use CSS variables for theme colors (e.g., `--bg`, `--text`, `--card`, `--border`, `--shadow`).
+* Toggle theme by applying a state/class to the root (examples conceptually):
+
+  * `body[data-theme="day"]` (default)
+  * `body[data-theme="night"]`
+* Remember the user choice using `localStorage` so theme persists on refresh.
+* Default must be **Daylight** if no stored preference exists.
+
+### 2) Layout + Sidebar Behavior (CRITICAL)
+
+* Include a left sidebar/nav panel with:
 
   * Section links (scroll-to)
   * A search/filter input that filters sections/cards by keyword (works across all modes)
-* Interactions:
 
-  * Collapsible nodes (click header to expand/collapse) where relevant
-  * Small **copy buttons 📋** beside key formulas/snippets to copy to clipboard
-  * **Double-click** on any text block copies that block to clipboard
+* The sidebar/nav panel must be **show/hide** via a button in the top toolbar.
+
+* **When the sidebar is hidden:**
+
+  * The main content area must **expand to occupy 100% of the available screen width**
+  * No “empty left space” should remain
+  * Implement this via a layout state/class
+    (example conceptually: `body.sidebar-hidden` changes grid/flex so content becomes full-width)
+
+* **Mobile-friendly**:
+
+  * On narrow screens, the sidebar moves **above** the content (top stacked layout)
+  * Sidebar show/hide still works on mobile
+
+### 3) Interactions (all modes)
+
+* Collapsible nodes (click header to expand/collapse) where relevant
+* Small **copy buttons 📋** beside key formulas/snippets to copy to clipboard
+* **Double-click** on any text block copies that block to clipboard
 * No external CSS/JS: everything inline in one HTML file.
 
-## 3) Content Rules (IMPORTANT — FULL CONTENT FROM PART A)
+---
+
+## C) Content Rules (IMPORTANT — FULL CONTENT FROM PART A)
 
 * The HTML is a **readable mini-textbook**, not just bullet fragments.
+
 * All Roots/Trunk/Leaves and Book/PPT content must embed and reorganize the **same detailed explanations and examples** from Part A:
 
   * Full definitions and key ideas
   * Full explanation of formulas/rules/patterns (with symbol meanings + units)
   * Examples, interpretations, tips, pitfalls
+
 * You may slightly condense wording, but do not reduce it to headlines only.
+
 * Do **NOT** include original page numbers.
 
 ---
@@ -312,7 +366,6 @@ Add a top toolbar with a **Mode Switch** (tabs or segmented buttons) that toggle
 3. THEN output the full HTML file in a single code block:
 
 ```html
-<!-- full self-contained HTML here -->
 ```
 
 ---
