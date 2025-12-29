@@ -318,7 +318,8 @@ Keep exactly these behaviors (as in `organic.html`):
 * Copy buttons: `.copy-btn` with `data-copy="..."` and ✓ feedback
 * Sidebar search: filters `.card` visibility based on keyword
 * Sidebar toggle: adds/removes `body.nav-collapsed`
-* Keep it **single file**, inline CSS + inline JS only (no external imports)
+* Math rendering in the HTML: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.
+* Keep it **single file**, inline CSS + inline JS only (no external imports except MathJax if needed for math rendering)
 
 ## E) STRICT RULE: DO NOT INVENT A NEW TEMPLATE
 

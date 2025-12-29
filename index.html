@@ -338,7 +338,8 @@ Add a **Theme Toggle** in the top toolbar (button or segmented control) to switc
 * Collapsible nodes (click header to expand/collapse) where relevant
 * Small **copy buttons 📋** beside key formulas/snippets to copy to clipboard
 * **Double-click** on any text block copies that block to clipboard
-* No external CSS/JS: everything inline in one HTML file.
+* Math rendering in the HTML: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.
+* No external CSS/JS: everything inline in one HTML file (except MathJax if needed for math rendering).
 
 ---
 
@@ -442,4 +443,3 @@ Now here is the input document you must base everything on:
   </script>
 </body>
 </html>
-

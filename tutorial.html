@@ -303,7 +303,8 @@ REQUIREMENTS:
 4. Interaction:
    - Collapsible sections (expand / collapse)
    - Clear visual separation between concepts
-   - No external libraries unless absolutely necessary
+   - No external libraries unless absolutely necessary (exception: MathJax if needed for math rendering)
+   - Math rendering in the HTML: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.
 
 5. Output rules:
    - Output **ONLY the final HTML**
@@ -387,4 +388,3 @@ IMPORTANT RULES
   </script>
 </body>
 </html>
-

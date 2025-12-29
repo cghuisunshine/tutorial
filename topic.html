@@ -164,6 +164,13 @@ PART A — CANONICAL TUTORIAL (MARKDOWN)
 
 Write a complete, student-ready tutorial with the following sections:
 
+GLOBAL RULES (apply everywhere)
+   • For every “why” question or phenomenon: explain it twice:
+     - Math View: equations, limiting cases, scaling, units/dimensions, and/or proofs
+     - Intuition View: physical picture or plain-language reasoning (what to visualize)
+   • When you introduce an equation/theorem: state assumptions + where it comes from
+     (derivation/proof sketch here, full derivation/proof in Section D).
+
 A) Big Picture &amp; Origin
    • What the concept/theorem/law is
    • Why it was introduced historically
@@ -184,25 +191,39 @@ C) Equations, Laws, or Theorems
    • Explanation of each symbol
    • Conditions under which it applies
    • Interpretation (what it tells us)
+   • Where it comes from (principle/axioms/definitions) + a short “derivation roadmap”
+   • Sanity checks: units/dimensions (if applicable) + at least one limiting/special case
+   • If multiple equivalent forms exist, show equivalence (algebra/logic), not just claims
 
 D) Derivations or Proofs
    • Step-by-step derivation (Physics/Chemistry)
    • OR step-by-step proof or reasoning (Math)
    • Explicitly state assumptions at each step
    • Explain *why* each step is valid
+   • Make the derivation as mathematically explicit as possible:
+     - Keep symbols consistent; define everything before use
+     - Show intermediate steps (don’t skip “obvious” algebra)
+     - Name the rule/principle used (e.g., conservation law, linearity, chain rule, etc.)
+     - Call out approximations and what breaks if they’re removed
+   • End each derivation/proof with:
+     - A quick check (units/dimensions, limiting behavior, sign/symmetry)
+     - A short Intuition View that explains the same result in words/visuals
 
 E) Worked Examples
    • Multiple examples of increasing difficulty
    • Start from concepts, not formula plugging
    • Show units (when relevant)
    • Explain reasoning at each step
+   • For each nontrivial step: include both Math View (what you did) and Intuition View (why it makes sense)
    • Highlight common mistakes within examples
 
 F) Common Questions &amp; Misconceptions
    • Typical student questions
    • Common misconceptions
    • Why they arise
-   • Correct explanations using intuition, diagrams, or logic
+   • Correct explanations using BOTH:
+     - Math View (equations/inequalities/limits or a short proof sketch)
+     - Intuition View (plain-language picture, diagram description, or analogy)
 
 G) Exam Strategy (Short &amp; Focused)
    • How this topic is commonly tested
@@ -259,13 +280,14 @@ REQUIREMENTS
 2) Interactivity (Vanilla JS only)
    • TOC click scrolls to section
    • Search filters TOC + highlights matched headings
-   • Sections collapsible using <details>/<summary>
+   • Sections collapsible using &lt;details&gt;/&lt;summary&gt;
    • Expand/Collapse All controls all sections
    • Double-click any formula, equation, or theorem block copies it
+   • Math rendering in the HTML: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.
 
 3) Content Formatting
    • Definitions → styled “Definition” boxes
-   • Equations/Theorems → <pre class="equation">
+   • Equations/Theorems → &lt;pre class="equation"&gt;
    • Derivations/Proofs → step-by-step blocks
    • Examples → clearly labeled example boxes
    • Misconceptions → “Common Trap” boxes
@@ -281,7 +303,7 @@ REQUIREMENTS
 5) Output rules (strict)
    • Return ONLY the final HTML inside ONE code block
    • No commentary outside the code block
-   • No external libraries or assets
+   • No external libraries or assets (exception: MathJax if needed for math rendering)
 
 Now generate the tutorial + JSON structure + final HTML study page for:
 [PASTE TOPIC / NOTES HERE]</pre>
