@@ -237,11 +237,18 @@ From the input document:
    * Explain **WHY**, not just HOW.
    * Be clear, compact, student-friendly. Avoid overly decorative writing.
 
+5. Global rule (Math View + Intuition View):
+
+   * For every important “why” question or phenomenon: explain it twice:
+     * Math View: equations, limiting cases, scaling, units/dimensions
+     * Intuition View: physical picture or plain-language reasoning (what to visualize)
+   * When you introduce an equation/formula: state assumptions + where it comes from (short derivation roadmap).
+
 ---
 
 # PART B — OUTPUT ONE HTML FILE USING ONLY `organic.html` TEMPLATE (NO OTHER STYLE)
 
-Create **one** self-contained HTML file that uses the **exact same layout, CSS, DOM structure, and interaction behavior** as the provided `organic.html` template.
+Create **one** standalone HTML file (inline CSS/JS; no external assets except MathJax if needed for math rendering) that uses the **exact same layout, CSS, DOM structure, and interaction behavior** as the provided `organic.html` template.
 
 ## A) HARD REQUIREMENT: TEMPLATE-LOCKED OUTPUT (NO STYLE VARIATIONS)
 
@@ -318,7 +325,7 @@ Keep exactly these behaviors (as in `organic.html`):
 * Copy buttons: `.copy-btn` with `data-copy="..."` and ✓ feedback
 * Sidebar search: filters `.card` visibility based on keyword
 * Sidebar toggle: adds/removes `body.nav-collapsed`
-* Math rendering in the HTML: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.
+* Math rendering in the HTML: you may add MathJax v3 (tex-chtml). Ensure all LaTeX you want rendered is wrapped in elements with class `.math`. Add a small preprocessing script that scans `.math` elements and fixes over-escaped TeX sequences (e.g., `\\frac` → `\frac`, `\\{` → `\{`, but do NOT change intentional `\\` line breaks), then trigger MathJax typesetting (wait for `MathJax.startup.promise` then call `MathJax.typesetPromise()`).
 * Keep it **single file**, inline CSS + inline JS only (no external imports except MathJax if needed for math rendering)
 
 ## E) STRICT RULE: DO NOT INVENT A NEW TEMPLATE

@@ -264,7 +264,7 @@ Create a compact JSON outline that mirrors the tutorial structure:
 PART C — FINAL HTML STUDY PAGE (ONE FILE)
 ====================================================
 
-Output ONE fully self-contained HTML file (no external assets).
+Output ONE standalone HTML file with inline CSS + inline JS (no external assets except MathJax if needed for math rendering).
 
 REQUIREMENTS
 
@@ -283,7 +283,7 @@ REQUIREMENTS
    • Sections collapsible using &lt;details&gt;/&lt;summary&gt;
    • Expand/Collapse All controls all sections
    • Double-click any formula, equation, or theorem block copies it
-   • Math rendering in the HTML: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.
+   • Math rendering in the HTML: you may add MathJax v3 (tex-chtml). Ensure all LaTeX you want rendered is wrapped in elements with class `.math`. Add a small preprocessing script that scans `.math` elements and fixes over-escaped TeX sequences (e.g., `\\frac` → `\frac`, `\\{` → `\{`, but do NOT change intentional `\\` line breaks), then trigger MathJax typesetting (wait for `MathJax.startup.promise` then call `MathJax.typesetPromise()`).
 
 3) Content Formatting
    • Definitions → styled “Definition” boxes

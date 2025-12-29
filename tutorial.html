@@ -185,7 +185,7 @@
         <span class="badge">Double-click to copy</span>
       </div>
       <div class="subtitle">
-        Use this prompt in a new chat to generate a canonical tutorial + pedagogical restructuring + a self-contained study HTML page.
+        Use this prompt in a new chat to generate a canonical tutorial + pedagogical restructuring + a single-file study HTML page (MathJax allowed for math rendering).
       </div>
     </div>
 
@@ -251,6 +251,12 @@ From the input document:
    - No skipped reasoning
    - No content invented beyond the source
 
+5. Global rule (Math View + Intuition View):
+   - For every important “why” question or phenomenon: explain it twice:
+     - Math View: equations, limiting cases, scaling, units/dimensions
+     - Intuition View: physical picture or plain-language reasoning (what to visualize)
+   - When you introduce an equation/formula: state assumptions + where it comes from (short derivation roadmap).
+
 ==================================================
 PART B — PEDAGOGICAL RESTRUCTURING
 ==================================================
@@ -278,7 +284,7 @@ Using ONLY the content from Part A:
 PART C — HTML OUTPUT (INTERACTIVE STUDY PAGE)
 ==================================================
 
-Convert Parts A and B into a **single, self-contained HTML page**.
+Convert Parts A and B into a **single HTML page** with inline CSS + inline JS (no external assets except MathJax if needed for math rendering).
 
 REQUIREMENTS:
 
@@ -304,7 +310,7 @@ REQUIREMENTS:
    - Collapsible sections (expand / collapse)
    - Clear visual separation between concepts
    - No external libraries unless absolutely necessary (exception: MathJax if needed for math rendering)
-   - Math rendering in the HTML: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.
+   - Math rendering in the HTML: you may add MathJax v3 (tex-chtml). Ensure all LaTeX you want rendered is wrapped in elements with class `.math`. Add a small preprocessing script that scans `.math` elements and fixes over-escaped TeX sequences (e.g., `\\frac` → `\frac`, `\\{` → `\{`, but do NOT change intentional `\\` line breaks), then trigger MathJax typesetting (wait for `MathJax.startup.promise` then call `MathJax.typesetPromise()`).
 
 5. Output rules:
    - Output **ONLY the final HTML**
