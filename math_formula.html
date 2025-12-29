@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MathJax Rendering Fix Prompt</title>
+  <style>
+    body{font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:24px;max-width:900px}
+    pre{white-space:pre-wrap;background:#f6f8fa;border:1px solid #d0d7de;padding:12px 14px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <h1>MathJax Rendering Fix Prompt</h1>
+  <pre>Fix math rendering in the html: add MathJax v3 (tex-chtml) and a preprocessing script that scans all elements with class .math, replaces double-escaped backslashes with single backslashes, then triggers MathJax typesetting (waiting for
+  MathJax.startup.promise before typesetPromise). Keep changes minimal and self-contained in the HTML.</pre>
+</body>
+</html>
