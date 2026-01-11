@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Term Extractor Bilingual JSON Prompt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --card-bg: #0b1120;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --radius-lg: 18px;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.6);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      padding: 24px;
+    }
+    .card {
+      max-width: 960px;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      padding: 22px 22px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.08) 0, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(56,189,248,0.07) 0, transparent 60%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+    h1 {
+      font-size: 1.35rem;
+      margin: 0 0 4px;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    h1 span.badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 2px 10px 3px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.98);
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    h1 span.badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(56,189,248,0.8);
+    }
+    .subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .hint-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .hint-row strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 3px 9px 4px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.5);
+      white-space: nowrap;
+    }
+    .pill-kbd {
+      font-family: ui-monospace, Menlo, Monaco, Consolas, "SF Mono", monospace;
+      font-size: 0.7rem;
+      padding: 1px 6px 2px;
+      border-radius: 6px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color: var(--text-main);
+    }
+    textarea {
+      width: 100%;
+      min-height: 440px;
+      resize: vertical;
+      background: radial-gradient(circle at top left, rgba(15,23,42,1), rgba(15,23,42,0.96));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148,163,184,0.55);
+      padding: 14px 13px 12px;
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      line-height: 1.4;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(15,23,42,0.9);
+      caret-color: var(--accent);
+      white-space: pre;
+      overflow-wrap: normal;
+      overflow-x: auto;
+    }
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.9),
+        0 0 0 1px rgba(56,189,248,0.5),
+        0 0 40px rgba(56,189,248,0.15);
+    }
+    .status {
+      margin-top: 6px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .status span.label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.7);
+    }
+    .status-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(56,189,248,0.7);
+    }
+    .copy-toast {
+      position: absolute;
+      inset-inline-end: 16px;
+      inset-block-start: 16px;
+      padding: 5px 11px 6px;
+      font-size: 0.74rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(56,189,248,0.6);
+      color: var(--accent);
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      z-index: 2;
+    }
+    .copy-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .copy-toast-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+    @media (max-width: 640px) {
+      .card {
+        border-radius: 22px;
+        padding: 18px 16px 16px;
+      }
+      h1 {
+        font-size: 1.1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+      }
+      .subtitle {
+        font-size: 0.8rem;
+      }
+      textarea {
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="copy-toast" id="copyToast">
+      <span class="copy-toast-dot"></span>
+      Prompt copied
+    </div>
+    <div class="card-inner">
+      <h1>
+        Term Extractor Prompt
+        <span class="badge">
+          <span class="badge-dot"></span>
+          JSON • EN ⇄ 中文
+        </span>
+      </h1>
+      <div class="subtitle">
+        Double-click inside the box to copy the entire prompt to your clipboard.
+      </div>
+      <div class="hint-row">
+        <span><strong>Tip:</strong> Paste this into ChatGPT, then add your FILTER DESCRIPTION + TEXT.</span>
+        <span class="pill">
+          Double-click or press
+          <span class="pill-kbd">Ctrl/⌘ + A</span>
+          then
+          <span class="pill-kbd">Ctrl/⌘ + C</span>
+        </span>
+      </div>
+      <textarea id="promptText" readonly>
+You are an expert bilingual (English–Chinese) subject-matter tutor and term extractor.
+
+YOUR GOAL
+From the input text (from a textbook chapter, article, or PDF), extract only the terms/words that match the filter description I provide, then output them in a single JSON array. For each term, include:
+- English term, definition, explanation
+- Chinese term, definition, explanation
+
+Use the following JSON object shape for EACH term:
+
+{
+  "en_term": "characteristic",
+  "en_def": "A feature or quality of an organism that can be observed; it may be determined by genes.",
+  "en_exp": "Hairline shape and flower colour are characteristics that can be inherited.",
+  "zh_term": "特征（characteristic）",
+  "zh_def": "生物体具有的某种可观察的性质，通常由基因决定。",
+  "zh_exp": "额发线形状、花的颜色等都属于可遗传的特征。"
+}
+
+INPUTS
+1. FILTER DESCRIPTION (what kind of terms to keep)
+2. TEXT (full content of the chapter/article or PDF OCR text)
+
+I will give them like this:
+
+=== FILTER DESCRIPTION ===
+[Describe here what kinds of terms to extract. For example:
+“Biology terms related to gene, heredity, and evolution”
+OR
+“Key technical terms about digital literacy and online learning”
+OR
+“Business law terms and contract law vocabulary only”
+]
+
+=== TEXT START ===
+[Paste the full text or PDF-extracted text here]
+=== TEXT END ===
+
+INSTRUCTIONS
+
+1. TERM SELECTION
+   - Only select terms/words that clearly match the FILTER DESCRIPTION.
+   - Do NOT invent terms that do not appear in the text.
+   - The exact term must appear in the text (or a very close variant, e.g. singular vs plural).
+   - Avoid super-generic words like “people”, “thing”, “example” unless the filter explicitly includes them.
+
+2. DEFINITIONS (en_def)
+   - FIRST, try to use the definition that is explicitly given in the text.
+     - If the text clearly defines the term (e.g., “X is …” or “X refers to …”), paraphrase that definition in clear, concise English.
+   - If there is no explicit definition, infer a short, accurate definition from context.
+     - Keep en_def 1–2 sentences, objective and textbook-like.
+   - NEVER copy extremely long sentences; compress to core meaning.
+
+3. EXPLANATIONS (en_exp)
+   - Give a simple explanation or example that helps a student understand the term in context.
+   - You may create an example that is consistent with the text and the subject.
+   - 1–2 sentences is enough; use plain, clear English.
+
+4. CHINESE PARTS (zh_term, zh_def, zh_exp)
+   - Translate the English term and definition into natural, accurate Simplified Chinese suitable for high-school or first-year university students.
+   - zh_term format: “中文术语（English term）” if appropriate. Example: "特征（characteristic）".
+   - zh_def should be a faithful, clear translation of en_def, not shorter than the English version unless necessary.
+   - zh_exp should be a natural translation of en_exp, with slight adaptation if needed to sound natural in Chinese.
+
+5. JSON FORMAT
+   - Output a SINGLE JSON ARRAY containing ALL term objects.
+   - Do NOT break it into batches. Do NOT write multiple JSON blocks.
+   - The final answer MUST be valid JSON:
+     - Start with “[” and end with “]”.
+     - Separate objects with commas.
+     - No trailing commas after the last object.
+     - No comments, no extra keys, no explanations outside JSON.
+
+EXAMPLE OF FINAL STRUCTURE (FORMAT ONLY – DO NOT REPEAT THIS IN THE ANSWER):
+
+[
+  {
+    "en_term": "characteristic",
+    "en_def": "A feature or quality of an organism that can be observed; it may be determined by genes.",
+    "en_exp": "Hairline shape and flower colour are characteristics that can be inherited.",
+    "zh_term": "特征（characteristic）",
+    "zh_def": "生物体具有的某种可观察的性质，通常由基因决定。",
+    "zh_exp": "额发线形状、花的颜色等都属于可遗传的特征。"
+  },
+  {
+    "en_term": "...",
+    "en_def": "...",
+    "en_exp": "...",
+    "zh_term": "...",
+    "zh_def": "...",
+    "zh_exp": "..."
+  }
+]
+
+NOW, using the FILTER DESCRIPTION and TEXT I provide, output ONLY the final JSON array as described above. Do not include any extra explanation or commentary.
+      </textarea>
+      <div class="status">
+        <span class="label">
+          <span class="status-dot" id="statusDot"></span>
+          Double-click inside the box to copy the full prompt.
+        </span>
+        <span class="label">
+          Works best in modern browsers with clipboard access.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const textarea = document.getElementById("promptText");
+      const toast = document.getElementById("copyToast");
+      const statusDot = document.getElementById("statusDot");
+
+      function selectAll() {
+        textarea.focus();
+        textarea.select();
+      }
+
+      function showToast() {
+        toast.classList.add("show");
+        statusDot.classList.add("active");
+        setTimeout(() => {
+          toast.classList.remove("show");
+          statusDot.classList.remove("active");
+        }, 1400);
+      }
+
+      async function copyPrompt() {
+        selectAll();
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(textarea.value);
+          }
+        } catch (e) {
+          // Fallback: rely on manual Ctrl/⌘ + C after select()
+        }
+        showToast();
+      }
+
+      textarea.addEventListener("dblclick", copyPrompt);
+    })();
+  </script>
+</body>
+</html>
+
