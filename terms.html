@@ -16,9 +16,7 @@
       --radius-lg: 18px;
       --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.6);
     }
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -51,10 +49,7 @@
       opacity: 0.8;
       pointer-events: none;
     }
-    .card-inner {
-      position: relative;
-      z-index: 1;
-    }
+    .card-inner { position: relative; z-index: 1; }
     h1 {
       font-size: 1.35rem;
       margin: 0 0 4px;
@@ -88,39 +83,6 @@
       color: var(--text-muted);
       margin-bottom: 14px;
     }
-    .hint-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    .hint-row strong {
-      color: var(--accent);
-      font-weight: 600;
-    }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 3px 9px 4px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.95);
-      border: 1px solid rgba(148,163,184,0.5);
-      white-space: nowrap;
-    }
-    .pill-kbd {
-      font-family: ui-monospace, Menlo, Monaco, Consolas, "SF Mono", monospace;
-      font-size: 0.7rem;
-      padding: 1px 6px 2px;
-      border-radius: 6px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.95);
-      color: var(--text-main);
-    }
     textarea {
       width: 100%;
       min-height: 440px;
@@ -146,31 +108,6 @@
         0 0 0 1px rgba(15,23,42,0.9),
         0 0 0 1px rgba(56,189,248,0.5),
         0 0 40px rgba(56,189,248,0.15);
-    }
-    .status {
-      margin-top: 6px;
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .status span.label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(148,163,184,0.7);
-    }
-    .status-dot.active {
-      background: var(--accent);
-      box-shadow: 0 0 10px rgba(56,189,248,0.7);
     }
     .copy-toast {
       position: absolute;
@@ -201,24 +138,6 @@
       border-radius: 999px;
       background: var(--accent);
     }
-    @media (max-width: 640px) {
-      .card {
-        border-radius: 22px;
-        padding: 18px 16px 16px;
-      }
-      h1 {
-        font-size: 1.1rem;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.35rem;
-      }
-      .subtitle {
-        font-size: 0.8rem;
-      }
-      textarea {
-        font-size: 0.78rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -235,23 +154,13 @@
           JSON • EN ⇄ 中文
         </span>
       </h1>
-      <div class="subtitle">
-        Double-click inside the box to copy the entire prompt to your clipboard.
-      </div>
-      <div class="hint-row">
-        <span><strong>Tip:</strong> Paste this into ChatGPT, then add your FILTER DESCRIPTION + TEXT.</span>
-        <span class="pill">
-          Double-click or press
-          <span class="pill-kbd">Ctrl/⌘ + A</span>
-          then
-          <span class="pill-kbd">Ctrl/⌘ + C</span>
-        </span>
-      </div>
+      <div class="subtitle">Double-click inside the text box to copy the entire prompt.</div>
+
       <textarea id="promptText" readonly>
 You are an expert bilingual (English–Chinese) subject-matter tutor and term extractor.
 
 YOUR GOAL
-From the input text (from a textbook chapter, article, or PDF), extract only the terms/words that match the filter description I provide, then output them in a single JSON array. For each term, include:
+From the input TEXT CONTENT (which comes from a text file or a PDF file), extract only the terms/words that match the filter description I provide. Then output them in a single JSON array. For each term, include:
 - English term, definition, explanation
 - Chinese term, definition, explanation
 
@@ -266,92 +175,69 @@ Use the following JSON object shape for EACH term:
   "zh_exp": "额发线形状、花的颜色等都属于可遗传的特征。"
 }
 
-INPUTS
-1. FILTER DESCRIPTION (what kind of terms to keep)
-2. TEXT (full content of the chapter/article or PDF OCR text)
+INPUTS YOU WILL PROVIDE
+1. FILTER DESCRIPTION  
+   (Defines what kinds of terms to extract)
 
-I will give them like this:
+2. TEXT CONTENT  
+   (The plain text extracted from a .txt file or a .pdf file)
+
+You will give input in this structure:
 
 === FILTER DESCRIPTION ===
-[Describe here what kinds of terms to extract. For example:
-“Biology terms related to gene, heredity, and evolution”
-OR
-“Key technical terms about digital literacy and online learning”
-OR
-“Business law terms and contract law vocabulary only”
+[Describe what to filter, for example:
+ “Biology terms related to genes, heredity, and evolution”
+ “Key terms from digital literacy”
+ “Chemistry 11 atomic structure vocabulary”
 ]
 
-=== TEXT START ===
-[Paste the full text or PDF-extracted text here]
-=== TEXT END ===
+=== TEXT CONTENT START ===
+[Paste raw text extracted from a text file or PDF]
+=== TEXT CONTENT END ===
 
 INSTRUCTIONS
 
 1. TERM SELECTION
    - Only select terms/words that clearly match the FILTER DESCRIPTION.
-   - Do NOT invent terms that do not appear in the text.
-   - The exact term must appear in the text (or a very close variant, e.g. singular vs plural).
-   - Avoid super-generic words like “people”, “thing”, “example” unless the filter explicitly includes them.
+   - The term must actually appear in the TEXT CONTENT (minor variations allowed: plural/singular).
+   - Prioritize academic/scientific/technical vocabulary.
+   - Ignore generic words unless explicitly requested by the filter.
 
 2. DEFINITIONS (en_def)
-   - FIRST, try to use the definition that is explicitly given in the text.
-     - If the text clearly defines the term (e.g., “X is …” or “X refers to …”), paraphrase that definition in clear, concise English.
-   - If there is no explicit definition, infer a short, accurate definition from context.
-     - Keep en_def 1–2 sentences, objective and textbook-like.
-   - NEVER copy extremely long sentences; compress to core meaning.
+   - First use any definition explicitly present in the TEXT CONTENT.
+   - If not stated, infer a correct definition based on context.
+   - Keep definitions concise (1–2 sentences).
 
 3. EXPLANATIONS (en_exp)
-   - Give a simple explanation or example that helps a student understand the term in context.
-   - You may create an example that is consistent with the text and the subject.
-   - 1–2 sentences is enough; use plain, clear English.
+   - Provide a simple explanation or example to help understanding.
+   - Must be consistent with the meaning and context of the term.
 
 4. CHINESE PARTS (zh_term, zh_def, zh_exp)
-   - Translate the English term and definition into natural, accurate Simplified Chinese suitable for high-school or first-year university students.
-   - zh_term format: “中文术语（English term）” if appropriate. Example: "特征（characteristic）".
-   - zh_def should be a faithful, clear translation of en_def, not shorter than the English version unless necessary.
-   - zh_exp should be a natural translation of en_exp, with slight adaptation if needed to sound natural in Chinese.
+   - zh_term should be “中文名称（English term）” when appropriate.
+   - zh_def must be a faithful, natural translation of the English definition.
+   - zh_exp should be a natural Chinese explanation of the English example/explanation.
 
 5. JSON FORMAT
-   - Output a SINGLE JSON ARRAY containing ALL term objects.
-   - Do NOT break it into batches. Do NOT write multiple JSON blocks.
-   - The final answer MUST be valid JSON:
-     - Start with “[” and end with “]”.
-     - Separate objects with commas.
-     - No trailing commas after the last object.
-     - No comments, no extra keys, no explanations outside JSON.
+   - Output a SINGLE JSON ARRAY containing ALL extracted term objects.
+   - Do NOT split into batches.
+   - Do NOT add extra text outside the JSON.
+   - JSON must be strictly valid.
 
-EXAMPLE OF FINAL STRUCTURE (FORMAT ONLY – DO NOT REPEAT THIS IN THE ANSWER):
+EXAMPLE JSON STRUCTURE (FORMAT ONLY — DO NOT REPEAT):
 
 [
   {
     "en_term": "characteristic",
-    "en_def": "A feature or quality of an organism that can be observed; it may be determined by genes.",
-    "en_exp": "Hairline shape and flower colour are characteristics that can be inherited.",
+    "en_def": "A feature or quality...",
+    "en_exp": "For example...",
     "zh_term": "特征（characteristic）",
-    "zh_def": "生物体具有的某种可观察的性质，通常由基因决定。",
-    "zh_exp": "额发线形状、花的颜色等都属于可遗传的特征。"
-  },
-  {
-    "en_term": "...",
-    "en_def": "...",
-    "en_exp": "...",
-    "zh_term": "...",
-    "zh_def": "...",
-    "zh_exp": "..."
+    "zh_def": "……",
+    "zh_exp": "……"
   }
 ]
 
-NOW, using the FILTER DESCRIPTION and TEXT I provide, output ONLY the final JSON array as described above. Do not include any extra explanation or commentary.
+NOW, using the FILTER DESCRIPTION and TEXT CONTENT I provide, output ONLY the JSON array. No explanations.
       </textarea>
-      <div class="status">
-        <span class="label">
-          <span class="status-dot" id="statusDot"></span>
-          Double-click inside the box to copy the full prompt.
-        </span>
-        <span class="label">
-          Works best in modern browsers with clipboard access.
-        </span>
-      </div>
     </div>
   </div>
 
@@ -359,20 +245,10 @@ NOW, using the FILTER DESCRIPTION and TEXT I provide, output ONLY the final JSON
     (function () {
       const textarea = document.getElementById("promptText");
       const toast = document.getElementById("copyToast");
-      const statusDot = document.getElementById("statusDot");
 
       function selectAll() {
         textarea.focus();
         textarea.select();
-      }
-
-      function showToast() {
-        toast.classList.add("show");
-        statusDot.classList.add("active");
-        setTimeout(() => {
-          toast.classList.remove("show");
-          statusDot.classList.remove("active");
-        }, 1400);
       }
 
       async function copyPrompt() {
@@ -381,10 +257,9 @@ NOW, using the FILTER DESCRIPTION and TEXT I provide, output ONLY the final JSON
           if (navigator.clipboard && navigator.clipboard.writeText) {
             await navigator.clipboard.writeText(textarea.value);
           }
-        } catch (e) {
-          // Fallback: rely on manual Ctrl/⌘ + C after select()
-        }
-        showToast();
+        } catch (e) {}
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 1400);
       }
 
       textarea.addEventListener("dblclick", copyPrompt);
